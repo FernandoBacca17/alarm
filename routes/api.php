@@ -33,7 +33,7 @@ Route::get('/devices',[DeviceController::class, 'index']);
 //Rutas privadas
 Route::group(['middleware' => ['auth:sanctum']], function(){
 
-    //Logout usuario
+    //Logout usuario...
     Route::post('/logout',[AuthController::class, 'logout']);
 
 });
