@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Vehicle;
 use App\Models\Device;
 
-class DeviceController extends Controller
+class VehicleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +15,10 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        $devices = Device::all();
-        return response()->json($devices, 200);
+        //
+        $vehicles = Vehicle::all();
+        return response()->json($vehicles, 200);
+
     }
 
     /**
@@ -38,28 +41,37 @@ class DeviceController extends Controller
     {
         //
         $fields = $request->validate([
-            'imei_code'         => 'required|max:15|string',
-            'bt_code_ph'        => 'required|string',
-            'bt_code_mt'        => 'required|string',
-            'number_moto'       => 'required|max:10|string',
-            'membresia'         => 'nullable'
+            'fabricante'        => 'required|string',
+            'modelo'            => 'required|string',
+            'descripcion'       => 'nullable',
+            'imei_code'         => 'required|max:15'
             
         ]);
 
-        $user=$request->user()->id;
+        if(Device::where('imei_code', $fields['imei_code'])->exists()){
 
-        $device = Device::create([
-            'imei_code' => $fields['imei_code'],
-            'bt_code_ph' => $fields['bt_code_ph'],
-            'bt_code_mt' => $fields['bt_code_mt'],
-            'number_moto' => $fields['number_moto'],
-            'membresia' => $fields['membresia'],
-            'user_id' => $user,
-        ]);
+            $id_device=Device::where('imei_code', $fields['imei_code'])->first()->id;
 
-        return response([
-            'message' => 'Device registrado'
-        ]);
+            $vehicle = Vehicle::create([
+                'fabricante' => $fields['fabricante'],
+                'modelo' => $fields['modelo'],
+                'descripcion' => $fields['descripcion'],
+                'device_id' => $id_device
+            ]);
+    
+            return response([
+                'message' => 'Vehicle registrado'
+            ]);
+
+        }else{
+
+            return response([
+                'message' => 'Imei de Device no esta registrado'
+            ]);
+
+        }
+
+        
     }
 
     /**

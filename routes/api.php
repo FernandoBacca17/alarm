@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,12 +30,28 @@ Route::post('/login',[AuthController::class, 'login']);
 //Ver usuarios registrados
 Route::get('/users',[UserController::class, 'index']);
 
+//Ver devices registrados
 Route::get('/devices',[DeviceController::class, 'index']);
+
+//Ver vehicles registrados
+Route::get('/vehicles',[VehicleController::class, 'index']);
+
+//Ver reports
+Route::get('/reports',[ReportController::class, 'index']);
 
 //Rutas privadas
 Route::group(['middleware' => ['auth:sanctum']], function(){
 
     //Logout usuario...
     Route::post('/logout',[AuthController::class, 'logout']);
+
+    //New device
+    Route::post('/device/register',[DeviceController::class, 'store']);
+
+    //New vehicle
+    Route::post('/vehicle/register',[VehicleController::class, 'store']);
+
+    //New report
+    Route::post('/report/register',[ReportController::class, 'store']);
 
 });

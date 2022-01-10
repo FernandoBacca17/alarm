@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Report;
 use App\Models\Device;
 
-class DeviceController extends Controller
+
+class ReportController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +16,9 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        $devices = Device::all();
-        return response()->json($devices, 200);
+        //
+        $reports = Report::all();
+        return response()->json($reports, 200);
     }
 
     /**
@@ -38,28 +41,39 @@ class DeviceController extends Controller
     {
         //
         $fields = $request->validate([
-            'imei_code'         => 'required|max:15|string',
-            'bt_code_ph'        => 'required|string',
-            'bt_code_mt'        => 'required|string',
-            'number_moto'       => 'required|max:10|string',
-            'membresia'         => 'nullable'
+            'state_switch'          => 'required|string',
+            'state_sys'             => 'required|string',
+            'latitude'              => 'required|string',
+            'longitude'             => 'required|string',
+            'speed'                 => 'required|string',
+            'imei_code'             => 'required|max:15'
             
         ]);
 
-        $user=$request->user()->id;
+        if(Device::where('imei_code', $fields['imei_code'])->exists()){
 
-        $device = Device::create([
-            'imei_code' => $fields['imei_code'],
-            'bt_code_ph' => $fields['bt_code_ph'],
-            'bt_code_mt' => $fields['bt_code_mt'],
-            'number_moto' => $fields['number_moto'],
-            'membresia' => $fields['membresia'],
-            'user_id' => $user,
-        ]);
+            $id_device=Device::where('imei_code', $fields['imei_code'])->first()->id;
 
-        return response([
-            'message' => 'Device registrado'
-        ]);
+            $report = Report::create([
+                'state_switch' => $fields['state_switch'],
+                'state_sys' => $fields['state_sys'],
+                'latitude' => $fields['latitude'],
+                'longitude' => $fields['longitude'],
+                'speed' => $fields['speed'],
+                'device_id' => $id_device
+            ]);
+    
+            return response([
+                'message' => 'Report registrado'
+            ]);
+
+        }else{
+
+            return response([
+                'message' => 'Error, no se puede registrar el report'
+            ]);
+
+        }
     }
 
     /**

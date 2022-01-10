@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Device extends Model
+class Report extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'imei_code',
-        'bt_code_ph',
-        'bt_code_mt',
-        'number_moto',
-        'membresia',
-        'user_id'
+        'state_switch',
+        'state_sys',
+        'latitude',
+        'longitude',
+        'speed',
+        'device_id'
     ];
 }

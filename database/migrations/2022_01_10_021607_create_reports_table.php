@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDevicesTable extends Migration
+class CreateReportsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,20 @@ class CreateDevicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('devices', function (Blueprint $table) {
+        Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('imei_code')->unique();
-            $table->string('bt_code_ph')->unique();
-            $table->string('bt_code_mt')->unique();
-            $table->string('number_moto')->unique();
-            $table->string('membresia')->nullable();
+            $table->string('state_switch');
+            $table->string('state_sys');
+            $table->string('latitude');
+            $table->string('longitude');
+            $table->string('speed');
 
             //Relacion uno a varios, no va Unique()
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('device_id');
 
-            $table->foreign('user_id')
+            $table->foreign('device_id')
                     ->references('id')
-                    ->on('users')
+                    ->on('devices')
                     ->onDelete('restrict')
                     ->onUpdate('cascade');
 
@@ -41,6 +41,6 @@ class CreateDevicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('devices');
+        Schema::dropIfExists('reports');
     }
 }
